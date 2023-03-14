@@ -7,11 +7,13 @@
 
 package src;
 
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.Scanner;
 
 public class Vista {
     
-    Scanner scan = new Scanner(System.in);
+    Scanner scan = new Scanner( new InputStreamReader(System.in, Charset.defaultCharset()));
 
     public Vista() {
 
@@ -36,8 +38,10 @@ public class Vista {
 
         System.out.println("Regular expression: ");
         String input = scan.nextLine();
-
+        System.out.println("Input: " + input);
+        
         if (checkCorrectness(input)) {
+            
             return input;
             // Returns the user's regular expression
         }
@@ -45,6 +49,7 @@ public class Vista {
             return null;
             // It was an invalid regular expression
         }
+
     }
 
     /**

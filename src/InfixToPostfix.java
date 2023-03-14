@@ -40,6 +40,12 @@ public class InfixToPostfix {
         Stack<Symbol> postfix = new Stack<>();
 
         ArrayList<Symbol> input = transformToSymbols(infix);
+        String test1 = "";
+        for (Symbol s: input) {
+            test1 += String.valueOf(s.c_id);
+        }
+        // DELETE LATER
+        System.out.println(test1);
 
         // Adds concat '.' if the user didn't specify
         input = concatAdd(input);
@@ -56,7 +62,7 @@ public class InfixToPostfix {
         for ( int i = 0; i < input.size(); i++) {
             Symbol c = input.get(i);
 
-            if ( Character.isDigit(c.c_id) || Character.isLetter(c.c_id)) {
+            if ( Character.isDigit(c.c_id) || Character.isLetter(c.c_id) || c.c_id == 'ε' ) {
                 postfix.push(c);
             } else if (c.c_id == '(') {
                 stack.push(c);
@@ -96,25 +102,6 @@ public class InfixToPostfix {
 
         ArrayList<Symbol> input = new ArrayList<>();
 
-        // for (int i = 0; i < ogInput.length(); i ++) {
-
-        //     int j = ogInput.charAt(i);
-            
-        //     if ( ogInput.charAt(i) == '?' || ogInput.charAt(i) == '*' ||
-        //          ogInput.charAt(i) == '+' || ogInput.charAt(i) == '.' ||
-        //          ogInput.charAt(i) == '|' || ogInput.charAt(i) == '(' ||
-        //          ogInput.charAt(i) == ')') {
-                
-        //         Symbol temp = new Symbol(ogInput.charAt(i));
-        //         input.add(temp);
-        //     } else if (dict.containsKey(j)) {
-        //         input.add(dict.get(j));
-        //     } else {
-        //         //The input contains unrecognized Symbols
-        //         System.out.println("No existe");
-        //     }
-        // }
-
         for (int i = 0; i < ogInput.length(); i++ ){
 
             Symbol temp = new Symbol(ogInput.charAt(i));
@@ -122,7 +109,7 @@ public class InfixToPostfix {
             // Checks if it already exists on the alphabet
             if (dict.containsKey(temp.id)) {
                 // It is already part of the dictionary, it adds it to de array
-                input.add(dict.get(temp.id));
+                input.add(temp);
             } else {
                 // Not already part of the dictionary
                 if (isOperator(temp)) {
@@ -190,6 +177,11 @@ public class InfixToPostfix {
                 } else if (input.get(i + 1).c_id == '(') {
                     temp.add(i + bias, concat);
                     bias ++;
+
+                } else if (input.get(i + 1).c_id == 'ε') {
+                    temp.add(i + bias, concat);
+                    bias ++;
+
                 }
             }
         }
