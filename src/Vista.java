@@ -97,6 +97,8 @@ public class Vista {
 
         }
 
+        if (input.charAt(input.length() - 1) == ')') closeParenthesis ++;
+
         if (input.charAt(input.length() - 1) == '(') {
             // empty last parenthesis (4)
             printErrorMssg(input.length() - 1, 4);
