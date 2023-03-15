@@ -85,6 +85,24 @@ public class Controller {
             if (afd_trans.Simulate(simulate1)) System.out.println("Belongs!");
             else System.out.println("Doesn't belong!");
 
+            // AFD Direct construction
+            Stack<Symbol> augmentedStack = new Stack<>();
+            for (Symbol s: stack) augmentedStack.add(s); // copy stack
+            Symbol concat = new Symbol('.');
+            Symbol enSymbol = new Symbol('#');
+            augmentedStack.add(enSymbol);
+            augmentedStack.add(concat);
+            
+
+            System.out.println("\nStack: ");
+            for (Symbol s: augmentedStack) {
+                System.out.print(s.c_id);
+            }
+            System.out.println("");
+
+            SintacticTree sintacticTree = new SintacticTree(augmentedStack);
+            sintacticTree.printTree(sintacticTree.getRoot());
+
         } 
 
 

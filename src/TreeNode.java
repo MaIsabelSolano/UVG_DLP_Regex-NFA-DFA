@@ -7,10 +7,18 @@
 
 package src;
 
+import java.util.ArrayList;
+
 public class TreeNode {
     Symbol value;
     TreeNode leftChild;
     TreeNode righChild;
+    
+    int position = -1;
+    boolean nullable = false;
+    
+    ArrayList<Integer> firstpos = new ArrayList<>();
+    ArrayList<Integer> lastpos = new ArrayList<>();
 
     /**
      * 
@@ -47,4 +55,44 @@ public class TreeNode {
         this.leftChild = leftChild;
         this.righChild = rightChild;
     }
+
+    public void addFirstPos(ArrayList<Integer> toAdd) {
+        for (int i: toAdd){
+            if (!firstpos.contains(i)) firstpos.add(i);
+        }
+    }
+
+    public void addLastPos(ArrayList<Integer> toAdd) {
+        for (int i: toAdd){
+            if (!lastpos.contains(i)) lastpos.add(i);
+        }
+    }
+
+    public boolean postionIsNull(){
+        if (position < 0) return true;
+        else return false;
+    }
+
+    /* Getters */
+    public ArrayList<Integer> getFirstpos() {
+        return firstpos;
+    }
+
+    public ArrayList<Integer> getLastpos() {
+        return lastpos;
+    }
+
+    public boolean isNullable() {
+        return nullable;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    /* Setters */
+    public void setNullable() {
+        this.nullable = true;
+    }
+
 }
