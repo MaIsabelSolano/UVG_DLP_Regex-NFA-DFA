@@ -149,6 +149,20 @@ public class AFD {
 
     }
 
+    public boolean Simulate(String r) {
+
+        State currentState = initialState;
+        for (int c = 0; c < r.length(); c++) {
+            State nextState = moveState(currentState, r.charAt(c));
+            if (nextState == null) return false;
+            else currentState = nextState;
+        }
+
+        if (currentState.type == Type.Final) return true;
+        else return false;
+
+    }
+
     ArrayList<State> eClosure(AFN afn, ArrayList<State> current) {
 
         ArrayList<State> E_states = new ArrayList<>();
@@ -217,6 +231,19 @@ public class AFD {
         }
 
         return S_states;
+    }
+
+    private State moveState(State state, char s) {
+
+        for (Transition t: trans) {
+            if (t.getOriginState().id == state.id) {
+                if (t.getSymbol().c_id == s) {
+                    return t.getFinalState();
+                }
+            }
+        }
+
+        return null;
     }
 
     /* Getters */

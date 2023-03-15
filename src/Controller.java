@@ -79,6 +79,12 @@ public class Controller {
             graphJpgFileName = "output/AFD_trans.jpg";
             gtf.generateFile(graphTxtFileName, afd_trans);
             tc.GraphAFN(graphTxtFileName, graphJpgFileName);
+
+            // AFD_trans simulation
+            String simulate1 = vis.getR();
+            if (afd_trans.Simulate(simulate1)) System.out.println("Belongs!");
+            else System.out.println("Doesn't belong!");
+
         } 
 
 

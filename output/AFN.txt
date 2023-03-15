@@ -1,7 +1,7 @@
 digraph AFN
 {
 	rankdir="LR";
-	18 [shape=circle, color=gray28];
+	16 [shape=circle, color=gray28];
 	6 [shape=circle];
 	4 [shape=circle];
 	0 [shape=circle];
@@ -10,7 +10,6 @@ digraph AFN
 	3 [shape=circle];
 	5 [shape=circle];
 	7 [shape=circle];
-	16 [shape=circle];
 	8 [shape=circle];
 	9 [shape=circle];
 	10 [shape=circle];
@@ -19,8 +18,7 @@ digraph AFN
 	13 [shape=circle];
 	14 [shape=circle];
 	15 [shape=circle];
-	17 [shape=circle];
-	19 [shape=doublecircle];
+	17 [shape=doublecircle];
 
 	0 -> 1 [label=a];
 	2 -> 3 [label=b];
@@ -38,12 +36,9 @@ digraph AFN
 	11 -> 12 [label=ε];
 	14 -> 15 [label=b];
 	13 -> 14 [label=ε];
-	16 -> 17 [label=ε];
-	16 -> 8 [label=ε];
-	15 -> 17 [label=ε];
 	15 -> 8 [label=ε];
-	18 -> 6 [label=ε];
-	18 -> 16 [label=ε];
-	7 -> 19 [label=ε];
-	17 -> 19 [label=ε];
+	16 -> 6 [label=ε];
+	16 -> 8 [label=ε];
+	7 -> 17 [label=ε];
+	15 -> 17 [label=ε];
 }
