@@ -51,6 +51,15 @@ public class Vista {
 
     }
 
+    public String getR() {
+
+        System.out.println("\nExpression to simulate: ");
+        String input = scan.nextLine();
+        
+        return input;
+
+    }
+
     /**
      * Checks if the user's regular expression is correct by 5 standards
      * 1. Starts witha valid character and no operator
