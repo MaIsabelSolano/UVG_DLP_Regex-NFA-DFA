@@ -14,6 +14,7 @@ public class SintacticTree {
     public SintacticTree(Stack<Symbol> input) {
         this.root = genTree(input);
         genFirstAndLastPos(root);
+        genFollowPos(root);
     }
 
     private TreeNode genTree(Stack<Symbol> input){
@@ -90,7 +91,7 @@ public class SintacticTree {
 
                 // lastpos
                 node.addLastPos(node.leftChild.getLastpos());
-                node.addLastPos(node.leftChild.getLastpos());   
+                node.addLastPos(node.righChild.getLastpos());   
             }
 
         } else if (node.value.c_id == '#') {
@@ -117,6 +118,37 @@ public class SintacticTree {
             ArrayList<Integer> temp = new ArrayList<>();
             followpos.put(newpos, temp);
         }
+    }
+
+    private void genFollowPos(TreeNode node) {
+
+        if (node == null) {
+            return;
+        }
+
+        // Gen children's first
+        genFollowPos(node.leftChild);
+        genFollowPos(node.righChild);
+        
+        if (node.value.c_id == '.') {
+            // concat
+            for (int pos: node.leftChild.getLastpos()) {
+                for (int posAdd: node.righChild.getFirstpos()) {
+                    if (!followpos.get(pos).contains(posAdd)) followpos.get(pos).add(posAdd);
+                }
+            }
+
+        } else if (node.value.c_id == '*' || node.value.c_id == '+') {
+            for (int pos: node.getLastpos()) {
+                for (int posAdd: node.getFirstpos()) {
+                    // Adds all of its first post to the last pos
+                    if (!followpos.get(pos).contains(posAdd)) followpos.get(pos).add(posAdd);
+                }
+            }
+        }
+
+
+
     }
 
     public void printTree( TreeNode node) {
@@ -148,8 +180,8 @@ public class SintacticTree {
             res += "]";
         }
 
-        if (node.isNullable()) res += ", Nullable";
-        else res += ", Not Nullable";
+        if (node.isNullable()) res += ", N";
+        else res += ", NN";
 
         res += "]";
         System.out.println(res);
