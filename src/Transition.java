@@ -37,4 +37,10 @@ public class Transition {
     public Symbol getSymbol() {
         return symbol;
     }
+
+    @Override
+    public String toString() {
+        // TODO Auto-generated method stub
+        return "["+originState.toString() + " --" + symbol.c_id + "-> " + finalState.toString() +" ]";
+    }
 }
