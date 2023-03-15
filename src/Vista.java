@@ -38,7 +38,6 @@ public class Vista {
 
         System.out.println("Regular expression: ");
         String input = scan.nextLine();
-        System.out.println("Input: " + input);
         
         if (checkCorrectness(input)) {
             

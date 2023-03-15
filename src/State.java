@@ -1,6 +1,6 @@
 /*
  * @author: Ma. Isabel Solano
- * @version 1, 26/02/23
+ * @version 1.1, 15/3/23
  * 
  * States of an authomata
  * 
@@ -8,7 +8,7 @@
 
 package src;
 
-public class State {
+public class State implements Comparable<State> {
     public int id;
     public Type type;
 
@@ -49,6 +49,16 @@ public class State {
     public String toString() {
         // TODO Auto-generated method stub
         return Integer.toString(id);
+    }
+
+    @Override
+    public int compareTo(State s) {
+        int res = 0;
+
+        if (this.id > s.id) res = 1;
+        else if (this.id < s.id) res = -1;
+
+        return res;
     }
 
     /* Getters */

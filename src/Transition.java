@@ -1,6 +1,6 @@
 /*
  * @author: Ma. Isabel Solano
- * @version 1, 26/02/23
+ * @version 1.1, 15/3/23
  * 
  * Stores a transition information
  */
@@ -25,6 +25,18 @@ public class Transition {
         this.finalState = finalState;
     }
 
+    public boolean equals(Transition t) {
+        boolean res = false;
+        if (t.originState.id == this.originState.id) {
+            if (t.symbol.c_id == this.symbol.c_id) {
+                if (t.finalState.id == this.finalState.id) {
+                    res = true;
+                }
+            }
+        }
+        return res;
+    }
+
     /* Getters */
     public State getFinalState() {
         return finalState;
@@ -36,5 +48,11 @@ public class Transition {
     
     public Symbol getSymbol() {
         return symbol;
+    }
+
+    @Override
+    public String toString() {
+        // TODO Auto-generated method stub
+        return "["+originState.toString() + " --" + symbol.c_id + "-> " + finalState.toString() +" ]";
     }
 }

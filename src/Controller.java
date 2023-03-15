@@ -13,8 +13,16 @@ import java.util.Stack;
 public class Controller {
     public static void main(String[] args) {
 
+        // classes
         Vista vis = new Vista();
+        TerminalCommand tc = new TerminalCommand();
+        GraphToFile gtf = new GraphToFile();
         
+        // important attributes
+        String graphTxtFileName;
+        String graphJpgFileName;
+
+
         // Welcome the user
         vis.Welcome();
 
@@ -41,6 +49,7 @@ public class Controller {
             for (Symbol s: stack) {
                 System.out.print(s.c_id);
             }
+            System.out.println("");
 
             // From postfix transform to Tree
             Tree regexT = new Tree(stack);
@@ -54,10 +63,21 @@ public class Controller {
             System.out.println(afn);
 
             // AFN graph
-            String graphTxtFileName = "output/AFN.txt";
-            String graphJpgFileName = "output/AFN.jpg";
-            GraphToFile gtf = new GraphToFile(graphTxtFileName, afn);
-            TerminalCommand tc = new TerminalCommand();
+            graphTxtFileName = "output/AFN.txt";
+            graphJpgFileName = "output/AFN.jpg";
+            gtf.generateFile(graphTxtFileName, afn);
+            tc.GraphAFN(graphTxtFileName, graphJpgFileName);
+
+            // --- AFD ----
+
+            // AFN to AFD
+            AFD afd_trans = new AFD(alphabet, afn);
+            System.out.println(afd_trans);
+
+            // AFD_trans graph
+            graphTxtFileName = "output/AFD_trans.txt";
+            graphJpgFileName = "output/AFD_trans.jpg";
+            gtf.generateFile(graphTxtFileName, afd_trans);
             tc.GraphAFN(graphTxtFileName, graphJpgFileName);
         } 
 

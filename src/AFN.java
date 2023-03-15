@@ -76,7 +76,7 @@ public class AFN extends Automata{
 
     @Override
     public String toString() {
-        String ret = "AFN\nSymbols: ";
+        String ret = "\nAFN\nSymbols: ";
 
         for (Integer i: Symbols.keySet()) {
             ret += Symbols.get(i).c_id + ", ";
@@ -87,7 +87,11 @@ public class AFN extends Automata{
             ret += Integer.toString(s.id) + ", ";
         }
 
-        ret += "}\nTransitions: ";
+        ret += "}\nInitial State : " + this.initialState.toString();
+
+        ret += "\nFinal State : " + this.FinalState.toString();
+
+        ret += "\nTransitions: ";
         for (int i = 0; i < transitions.size(); i ++)  {
             String temp = "[";
             int originId = transitions.get(i).getOriginState().getId();
