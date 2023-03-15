@@ -1,6 +1,6 @@
 /*
  * @author: Ma. Isabel Solano
- * @version 1, 26/02/23
+ * @version 1.1, 15/3/23
  * 
  * Stores a transition information
  */

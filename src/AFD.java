@@ -1,6 +1,6 @@
 /*
  * @author: Ma. Isabel Solano
- * @version 1.1, 14/03/23
+ * @version 1.1, 15/3/23
  * 
  * AFN class as a Automata should be defined.
  * 
@@ -9,7 +9,6 @@
 package src;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Stack;
@@ -20,6 +19,7 @@ public class AFD {
     private HashMap<Integer, Symbol> Symbols;
     private State initialState;
     private ArrayList<Transition> trans;
+    private ArrayList<State> finalStates;
     
     /**
      * 
@@ -37,11 +37,18 @@ public class AFD {
      * @param Symbols
      * @param afn
      */
-    public AFD(HashMap<Integer, Symbol> Symbols, AFN afn) {
+    public AFD(HashMap<Integer, Symbol> sym, AFN afn) {
 
         // Delete epsilon from Symbol dictionary
         Symbol epsilon = new Symbol('ε');
-        Symbols.remove(epsilon.id);
+        sym.remove(epsilon.id);
+
+        this.Symbols = sym;
+
+        // initialize the others too
+        this.States = new ArrayList<>();
+        this.trans = new ArrayList<>();
+        this.finalStates = new ArrayList<>();
 
         // Array list that 
         ArrayList<ArrayList<State>> C_states = new ArrayList<>();
@@ -53,14 +60,32 @@ public class AFD {
         unverified_States.add(currentStates); 
         C_states.add(currentStates);
 
-        boolean verifier = true; // Indicates if new states have been added to C_states
-        // The algorithm stops when no new states are being added, inicating that 
+        // generate initial state
+        this.initialState = new State(0, 1);
+        this.States.add(initialState);
+
+
+        boolean verifier = true; // Indicates if there are still states to mark
         while (verifier) {
 
             // Verify if there are still unverified states    
             if (!unverified_States.isEmpty()) {
                 // if yes, pop one from unverified_States
                 currentStates = unverified_States.pop();
+
+                // // generate new real state (number, not array)
+                // int n = C_states.indexOf(currentStates);
+                // if (n == 0) {
+                //     // inital state
+                //     State newState_in = new State(n, 1);
+                // } else if (currentStates.contains(afn.getFinalState())) {
+                //     // final state
+                //     State newState_in = new State(n, 3);
+                // } else {
+                //     // transitional state
+                //     State newState_in = new State(n, 2);
+                // }
+
             } else {
                 // if not, stop
                 verifier = false;
@@ -96,10 +121,45 @@ public class AFD {
                 moveRes.sort(Comparator.naturalOrder());
 
                 // verify if we already have this state
-                if (!C_states.contains(moveRes) && !moveRes.isEmpty()) {
-                    C_states.add(moveRes);
-                    unverified_States.add(moveRes);
+                if (!C_states.contains(moveRes)) {
+                    // verify that the array is not empty
+                    if (!moveRes.isEmpty()) {
+                        C_states.add(moveRes);
+                        unverified_States.add(moveRes);
+
+                        
+                        State endState;
+                        if (moveRes.contains(afn.getFinalState())){
+                            endState = new State(C_states.indexOf(moveRes), 3);
+                            this.finalStates.add(endState);
+                        } else {
+                            endState = new State(C_states.indexOf(moveRes), 2);
+                        }
+
+                        // gen state and gen transition
+                        
+                        this.States.add(endState); // add new State
+
+                        Transition tempTransition = new Transition(
+                            States.get(C_states.indexOf(currentStates)), 
+                            Symbols.get(currentSymbol),
+                            States.get(C_states.indexOf(moveRes)));
+
+                        this.trans.add(tempTransition);
+                    }
+                    
+
+                } else {
+
+                    // gen state and gen transition
+                    Transition tempTransition = new Transition(
+                        States.get(C_states.indexOf(currentStates)), 
+                        Symbols.get(currentSymbol),
+                        States.get(C_states.indexOf(moveRes)));
+
+                    this.trans.add(tempTransition);
                 }
+
 
             }
 
@@ -178,22 +238,47 @@ public class AFD {
         return S_states;
     }
 
-    ArrayList<State> combine(ArrayList<State> e_c, ArrayList<State> m) {
-
-        ArrayList<State> states = new ArrayList<>();
-
-        for (State s: e_c) states.add(s);
-
-        for (State s: m) {
-            if (!states.contains(s)) states.add(s);
-        }
-
-        // sort array
-        states.sort(Comparator.naturalOrder()); // This way they will alwasy have the same order
-
-        return states;
+    /* Getters */
+    public ArrayList<State> getFinalStates() {
+        return finalStates;
     }
 
-    
+    public State getInitialState() {
+        return initialState;
+    }
+
+    public ArrayList<State> getStates() {
+        return States;
+    }
+
+    public ArrayList<Transition> getTransitions() {
+        return trans;
+    }
+
+    public HashMap<Integer, Symbol> getSymbols() {
+        return Symbols;
+    }
+
+    @Override
+    public String toString() {
+        String info = "";
+        info += "\nSymbols: ";
+        for (int sym: Symbols.keySet()) info += Symbols.get(sym).c_id + ", ";
+
+        info += "\nStates: {";
+        for (State s: States) info += s.toString() + ", ";
+        info += "}";
+
+        info += "\nTransitions: ";
+        for (Transition t: trans) info += t.toString();
+
+        info += "\nInitial state: " + this.initialState.toString();
+
+        info += "\nTerminal states: {"; 
+        for (State s: finalStates) info += s.toString() + ", ";
+        info += "}";
+
+        return info;
+    }
 
 }
