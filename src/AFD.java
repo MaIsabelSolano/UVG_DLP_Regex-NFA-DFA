@@ -73,49 +73,19 @@ public class AFD {
                 // if yes, pop one from unverified_States
                 currentStates = unverified_States.pop();
 
-                // // generate new real state (number, not array)
-                // int n = C_states.indexOf(currentStates);
-                // if (n == 0) {
-                //     // inital state
-                //     State newState_in = new State(n, 1);
-                // } else if (currentStates.contains(afn.getFinalState())) {
-                //     // final state
-                //     State newState_in = new State(n, 3);
-                // } else {
-                //     // transitional state
-                //     State newState_in = new State(n, 2);
-                // }
-
             } else {
                 // if not, stop
                 verifier = false;
                 // The algorithm is done
             }
 
-            // DELETE LATER
-            String tempString = "";
-            for (State s: currentStates) tempString += s.toString();
-            System.out.println("Current state: " + tempString);
-
             // perform for each symbol in the alphabet
             for (int currentSymbol: Symbols.keySet()) {
 
                 ArrayList<State> moveRes = move(afn, currentStates, Symbols.get(currentSymbol));
 
-                // DELETE LATER
-                tempString = "";
-                for (State s: currentStates) tempString += s.toString();
-                System.out.println("Current state (after "+ Symbols.get(currentSymbol).c_id +"): " + tempString);
-
-
                 // e-clousure
                 moveRes = eClosure(afn, moveRes);
-
-                // DELETE LATER
-                tempString = "";
-                for (State s: currentStates) tempString += s.toString();
-                System.out.println("Current state (after epsilon): " + tempString);
-
 
                 // rearange
                 moveRes.sort(Comparator.naturalOrder());
@@ -155,9 +125,13 @@ public class AFD {
                     Transition tempTransition = new Transition(
                         States.get(C_states.indexOf(currentStates)), 
                         Symbols.get(currentSymbol),
-                        States.get(C_states.indexOf(moveRes)));
+                        States.get(C_states.indexOf(moveRes))
+                    );
 
-                    this.trans.add(tempTransition);
+                    // Check if the transitions was not added before
+                    boolean repeated = false;
+                    for (Transition t: trans) repeated = tempTransition.equals(t);
+                    if (!repeated) this.trans.add(tempTransition);
                 }
 
 
@@ -165,16 +139,13 @@ public class AFD {
 
         }
 
-        // Print DELETE LATER
-        for (int i = 0; i < C_states.size(); i++) {
-            String temp = "{";
-            for (State s : C_states.get(i)) temp += s.toString();
-            temp += "}";
-            System.out.println(temp);
-        }
-
-        // Transform C_states to new simple states and determines which states are
-        // final states
+        // System.out.println("\nGenerated states");
+        // for (int i = 0; i < C_states.size(); i++) {
+        //     String temp = "{";
+        //     for (State s : C_states.get(i)) temp += s.toString();
+        //     temp += "}";
+        //     System.out.println(temp);
+        // }
 
     }
 
@@ -183,26 +154,36 @@ public class AFD {
         ArrayList<State> E_states = new ArrayList<>();
         for (State s: current) E_states.add(s); // copy first symbols
 
-        for (int i = 0; i < current.size(); i++) {
+        boolean keepGoing = true;
+        while (keepGoing) {
+            for (int i = 0; i < current.size(); i++) {
 
-            // System.out.println("checking " + current.get(i).toString());
-            // Check the epsilon transitions for each the current set of states
-
-            State temp = current.get(i);
-            ArrayList<Transition> transitions = afn.getTransitions();
-
-            for (int j = 0; j < transitions.size() ; j++ ) {
-                if (transitions.get(j).getOriginState().id == temp.id) {
-                    // System.out.println(transitions.get(j));
-                    // check for all transitions that start begin with that state
-                    if (transitions.get(j).symbol.c_id == 'ε') {
-                        // System.out.println("Adds " + transitions.get(j).getFinalState().toString());
-                        // if it has an epsilon transition, it ads the final state to Estates
-
-                        // but first it checks if it was already in the list so it won't repeat states
-                        if (!E_states.contains(transitions.get(j).getFinalState())) E_states.add(transitions.get(j).getFinalState());
+                // Check the epsilon transitions for each the current set of states
+                State temp = current.get(i);
+                ArrayList<Transition> transitions = afn.getTransitions();
+    
+                for (int j = 0; j < transitions.size() ; j++ ) {
+                    if (transitions.get(j).getOriginState().id == temp.id) {
+                        // check for all transitions that start begin with that state
+                        if (transitions.get(j).symbol.c_id == 'ε') {
+                            // if it has an epsilon transition, it ads the final state to Estates
+    
+                            // but first it checks if it was already in the list so it won't repeat states
+                            if (!E_states.contains(transitions.get(j).getFinalState())) E_states.add(transitions.get(j).getFinalState());
+                        }
                     }
                 }
+    
+            }
+
+            // Determine weather we should keep going or not
+            if (E_states.equals(current)) {
+                // There are no other epsilon transitions to be reached
+                keepGoing = false;
+            } else {
+                // Rewrite current
+                current.clear();
+                for (State s: E_states) current.add(s);
             }
 
         }
@@ -261,7 +242,7 @@ public class AFD {
 
     @Override
     public String toString() {
-        String info = "";
+        String info = "\nAFD";
         info += "\nSymbols: ";
         for (int sym: Symbols.keySet()) info += Symbols.get(sym).c_id + ", ";
 

@@ -25,6 +25,18 @@ public class Transition {
         this.finalState = finalState;
     }
 
+    public boolean equals(Transition t) {
+        boolean res = false;
+        if (t.originState.id == this.originState.id) {
+            if (t.symbol.c_id == this.symbol.c_id) {
+                if (t.finalState.id == this.finalState.id) {
+                    res = true;
+                }
+            }
+        }
+        return res;
+    }
+
     /* Getters */
     public State getFinalState() {
         return finalState;
