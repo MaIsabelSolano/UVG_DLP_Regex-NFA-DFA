@@ -11,8 +11,6 @@ package src;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.swing.text.AbstractDocument.LeafElement;
-
 public class AFN extends Automata{
 
     private ArrayList<State> States;
