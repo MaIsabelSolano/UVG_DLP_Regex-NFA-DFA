@@ -1,7 +1,12 @@
 digraph AFN
 {
 	rankdir="LR";
-	0 [shape=doublecircle];
+	0 [shape=circle, color=gray28];
+	1 [shape=circle];
+	2 [shape=doublecircle];
 
-	0 -> 0 [label=a];
+	0 -> 1 [label=a];
+	0 -> 2 [label=b];
+	0 -> 2 [label=c];
+	1 -> 2 [label=b];
 }

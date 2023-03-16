@@ -109,6 +109,10 @@ public class Controller {
             // --- Simulation
             String simulate1 = vis.getR();
 
+            // AFN 
+            if (afn.Simulate(simulate1)) System.out.println("AFD: Belongs!");
+            else System.out.println("AFN: Doesn't belong!");
+
             // AFN to AFD
             if (afd_trans.Simulate(simulate1)) System.out.println("AFD (subset): Belongs!");
             else System.out.println("AFD (subset): Doesn't belong!");
