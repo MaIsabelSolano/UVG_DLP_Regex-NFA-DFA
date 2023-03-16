@@ -102,6 +102,15 @@ public class Controller {
 
             SintacticTree sintacticTree = new SintacticTree(augmentedStack);
             sintacticTree.printTree(sintacticTree.getRoot());
+            AFD afd_direct = new AFD(alphabet, sintacticTree);
+            System.out.println(afd_direct);
+
+            // AFD_direct graph
+            graphTxtFileName = "output/AFD_direct.txt";
+            graphJpgFileName = "output/AFD_direct.jpg";
+            gtf.generateFile(graphTxtFileName, afd_direct);
+            tc.GraphAFN(graphTxtFileName, graphJpgFileName);
+
 
         } 
 
