@@ -52,6 +52,91 @@ public class AFN extends Automata{
         this.initialState = initialState;
         this.transitions = transitions;
     }
+ 
+    public boolean Simulate(String r) {
+
+        ArrayList<State> currentState = new ArrayList<>();
+        currentState.add(this.initialState);
+        currentState = eClosure(currentState);
+
+        for (int c = 0; c < r.length(); c++) {
+            
+            Symbol temp = new Symbol(r.charAt(c));
+            currentState = move(currentState, temp);
+            currentState = eClosure(currentState);
+        }
+
+        if(currentState.contains(FinalState)) return true;
+        return false;
+    }
+
+    ArrayList<State> move(ArrayList<State> current, Symbol s) {
+
+        ArrayList<State> S_states = new ArrayList<>();
+
+        for (int i = 0; i < current.size(); i++) {
+            // Check the given symbol transitions for each the current set of states
+
+            State temp = current.get(i);
+
+            for (int j = 0; j < transitions.size() ; j++ ) {
+                if (transitions.get(j).getOriginState().id == temp.id) {
+                    // check for all transitions that start begin with that state
+                    if (transitions.get(j).symbol.c_id == s.c_id) {
+                        // if it has an epsilon transition, it ads the final state to Estates
+
+                        // but first it checks if it was already in the list so it won't repeat states
+                        if (!S_states.contains(transitions.get(j).getFinalState())) S_states.add(transitions.get(j).getFinalState());
+                    }
+                }
+            }
+
+        }
+
+        return S_states;
+    }
+
+    ArrayList<State> eClosure(ArrayList<State> current) {
+
+        ArrayList<State> E_states = new ArrayList<>();
+        for (State s: current) E_states.add(s); // copy first symbols
+
+        boolean keepGoing = true;
+        while (keepGoing) {
+            for (int i = 0; i < current.size(); i++) {
+
+                // Check the epsilon transitions for each the current set of states
+                State temp = current.get(i);
+    
+                for (int j = 0; j < transitions.size() ; j++ ) {
+                    if (transitions.get(j).getOriginState().id == temp.id) {
+                        // check for all transitions that start begin with that state
+                        if (transitions.get(j).symbol.c_id == 'ε') {
+                            // if it has an epsilon transition, it ads the final state to Estates
+    
+                            // but first it checks if it was already in the list so it won't repeat states
+                            if (!E_states.contains(transitions.get(j).getFinalState())) E_states.add(transitions.get(j).getFinalState());
+                        }
+                    }
+                }
+    
+            }
+
+            // Determine weather we should keep going or not
+            if (E_states.equals(current)) {
+                // There are no other epsilon transitions to be reached
+                keepGoing = false;
+            } else {
+                // Rewrite current
+                current.clear();
+                for (State s: E_states) current.add(s);
+            }
+
+        }
+
+
+        return E_states;
+    }
 
     /* Getters */
     public ArrayList<State> getStates() {
