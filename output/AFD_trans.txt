@@ -1,7 +1,7 @@
 digraph AFN
 {
 	rankdir="LR";
-	0 [shape=circle, color=gray28];
+	0 [shape=doublecircle];
 	1 [shape=doublecircle];
 
 	0 -> 1 [label=a];

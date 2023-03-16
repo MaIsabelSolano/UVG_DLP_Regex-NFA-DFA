@@ -80,11 +80,6 @@ public class Controller {
             gtf.generateFile(graphTxtFileName, afd_trans);
             tc.GraphAFN(graphTxtFileName, graphJpgFileName);
 
-            // AFD_trans simulation
-            String simulate1 = vis.getR();
-            if (afd_trans.Simulate(simulate1)) System.out.println("Belongs!");
-            else System.out.println("Doesn't belong!");
-
             // AFD Direct construction
             Stack<Symbol> augmentedStack = new Stack<>();
             for (Symbol s: stack) augmentedStack.add(s); // copy stack
@@ -110,6 +105,17 @@ public class Controller {
             graphJpgFileName = "output/AFD_direct.jpg";
             gtf.generateFile(graphTxtFileName, afd_direct);
             tc.GraphAFN(graphTxtFileName, graphJpgFileName);
+
+            // --- Simulation
+            String simulate1 = vis.getR();
+
+            // AFN to AFD
+            if (afd_trans.Simulate(simulate1)) System.out.println("AFD (subset): Belongs!");
+            else System.out.println("AFD (subset): Doesn't belong!");
+
+            // Direct AFD 
+            if (afd_direct.Simulate(simulate1)) System.out.println("AFD (Direct): Belongs!");
+            else System.out.println("AFD (Direct): Doesn't belong!");
 
 
         } 

@@ -61,7 +61,14 @@ public class AFD {
         C_states.add(currentStates);
 
         // generate initial state
-        this.initialState = new State(0, 1);
+        State initState;
+        if (currentStates.contains(afn.getFinalState())){
+            initState = new State(0, 3);
+            this.finalStates.add(initState);
+        } else {
+            initState = new State(0, 1);
+        }
+        this.initialState = initState;
         this.States.add(initialState);
         // TODO check if initial state can be a final state too
 
@@ -172,14 +179,13 @@ public class AFD {
         Stack<ArrayList<Integer>> unverifiedStates = new Stack<>();
         
         // Start with the root's firtpos
-        int newStateNum = 0;
         ArrayList<Integer> currentStates = new ArrayList<>();
         
         ArrayList<Integer> initial = tree.getRoot().getFirstpos();
         State newState;
         // check if it's a valid end state
-        if (initial.contains(tree.getTerminalpos())) newState = new State(newStateNum, 3);
-        else newState = new State(newStateNum, 1);
+        if (initial.contains(tree.getTerminalpos())) newState = new State(0, 3);
+        else newState = new State(0, 1);
         this.initialState = newState;
         States.add(newState);
         
@@ -198,8 +204,6 @@ public class AFD {
                 // if so, pos the latest unverified State
                 currentStates = unverifiedStates.pop();
 
-                System.out.println("CS: "  + currentStates.toString());
-
             } else {
                 // The alrgorithm is over
                 keepGoing = false;
@@ -209,15 +213,12 @@ public class AFD {
             for (int i: alphabet.keySet()) {
                 nextState = new ArrayList<>(); // create empty
 
-                System.out.println("Symbol: "+ alphabet.get(i).c_id);
-
                 // check in all of the positions of the currentStates
                 for (int pos: currentStates) {
 
                     // check if the current symbol is represented in the current position
                     if (tree.getPosSymbol().get(pos).c_id == alphabet.get(i).c_id) {
 
-                        System.out.println(Integer.toString(pos) + " " + alphabet.get(i).c_id);
                         // get the follopos and add it to currentStes
                         for (int addPos: tree.getFollowpos(pos)) {
                             if (!nextState.contains(addPos)) nextState.add(addPos); 
@@ -225,12 +226,9 @@ public class AFD {
                     }
                 }
 
-                System.out.println("NS: " + nextState.toString());
-
                 if (!nextState.isEmpty()) {
                     // check it this state exists
                     if (baseStates.contains(nextState)) {
-                        System.out.println("contains");
                         // get indexes
                         int originId = baseStates.indexOf(currentStates);
                         int destinyId = baseStates.indexOf(nextState);
@@ -241,11 +239,15 @@ public class AFD {
                             States.get(destinyId)
                         );
 
+                        // check for repeated transition
+                        int add = 0;
+                        for (Transition t: trans) {
+                            if (newTrans.equals(t)) add += 1;
+                        }
                         // Add to the transitions
-                        if (!trans.contains(newTrans)) trans.add(newTrans);
+                        if (add == 0) trans.add(newTrans);
 
                     } else {
-                        System.out.println("To add");
                         // generate new state and transitions
 
                         // add to the array
@@ -274,7 +276,6 @@ public class AFD {
                         for (Transition t: trans) {
                             if (newTrans.equals(t)) add += 1;
                         }
-
                         // Add to the transitions
                         if (add == 0) trans.add(newTrans);
                     }
@@ -284,13 +285,13 @@ public class AFD {
             }
         }
 
-        System.out.println("\nGenerated states");
-        for (int i = 0; i < baseStates.size(); i++) {
-            String temp = "{";
-            for (int s : baseStates.get(i)) temp += Integer.toString(s);
-            temp += "}";
-            System.out.println(temp);
-        }
+        // System.out.println("\nGenerated states");
+        // for (int i = 0; i < baseStates.size(); i++) {
+        //     String temp = "{";
+        //     for (int s : baseStates.get(i)) temp += Integer.toString(s);
+        //     temp += "}";
+        //     System.out.println(temp);
+        // }
     }
 
     public boolean Simulate(String r) {

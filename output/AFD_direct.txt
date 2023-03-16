@@ -4,5 +4,4 @@ digraph AFN
 	0 [shape=doublecircle];
 
 	0 -> 0 [label=a];
-	0 -> 0 [label=a];
 }
