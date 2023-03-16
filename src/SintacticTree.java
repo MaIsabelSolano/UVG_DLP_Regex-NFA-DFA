@@ -8,6 +8,7 @@ public class SintacticTree {
 
     private TreeNode root;
     private HashMap<Integer, ArrayList<Integer>> followpos = new HashMap<>();
+    private HashMap<Integer, Symbol> posSymbol = new HashMap<>();
     private int newpos = 0;
     private int terminalpos = 0;
 
@@ -107,6 +108,9 @@ public class SintacticTree {
 
             terminalpos = newpos; 
 
+            // Add to the dictionary
+            posSymbol.put(newpos, node.value);
+
         } else {
             // Is a leaf, a Symbol, therefore, it's first and last pos are itself
             newpos++;
@@ -117,6 +121,10 @@ public class SintacticTree {
             // Initialize followos arrayList
             ArrayList<Integer> temp = new ArrayList<>();
             followpos.put(newpos, temp);
+
+            // Add to the dictionary
+            posSymbol.put(newpos, node.value);
+
         }
     }
 
@@ -191,6 +199,18 @@ public class SintacticTree {
     /* Getters */
     public TreeNode getRoot() {
         return root;
+    }
+
+    public int getTerminalpos() {
+        return terminalpos;
+    }
+
+    public HashMap<Integer, Symbol> getPosSymbol() {
+        return posSymbol;
+    }
+
+    public ArrayList<Integer> getFollowpos(int pos) {
+        return followpos.get(pos);
     }
     
 }

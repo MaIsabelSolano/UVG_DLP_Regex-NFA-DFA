@@ -63,6 +63,7 @@ public class AFD {
         // generate initial state
         this.initialState = new State(0, 1);
         this.States.add(initialState);
+        // TODO check if initial state can be a final state too
 
 
         boolean verifier = true; // Indicates if there are still states to mark
@@ -147,6 +148,63 @@ public class AFD {
         //     System.out.println(temp);
         // }
 
+    }
+
+    public AFD(HashMap<Integer, Symbol> sym, SintacticTree tree) {
+
+        // Delete epsilon from Symbol dictionary
+        Symbol epsilon = new Symbol('ε');
+        sym.remove(epsilon.id);
+
+        this.Symbols = sym; 
+
+        ArrayList<ArrayList<Integer>> baseStates = new ArrayList<>();
+        Stack<ArrayList<Integer>> unverifiedStates = new Stack<>();
+        
+        // Start with the root's firtpos
+        int newStateNum = 0;
+        ArrayList<Integer> currentStates = tree.getRoot().getFirstpos();
+        State newState =  new State(newStateNum, 1);
+        this.initialState = newState;
+        // TODO check if currentPos contains last element. 
+
+        // add to stack
+        unverifiedStates.push(currentStates);
+
+        ArrayList<Integer> nextState;
+
+        boolean keepGoing = true;
+        while (keepGoing) {
+
+            // verify if there is still anything to get transitions from 
+            if (!unverifiedStates.isEmpty()) {
+                // if so, pos the latest unverified State
+                currentStates = unverifiedStates.pop();
+
+            } else {
+                // The alrgorithm is over
+                keepGoing = false;
+            }
+
+            // check transtitions from each symbol in the alphabet
+            for (int i: Symbols.keySet()) {
+                nextState = new ArrayList<>(); // create empy
+
+                // check in all of the positions of the currentStates
+                for (int pos: currentStates) {
+
+                    // check if the current symbol is represented in the current position
+                    if (tree.getPosSymbol().get(pos) == Symbols.get(i)) {
+
+                        // get the follopos and add it to currentStes
+                        for (int addPos: tree.getFollowpos(pos)) {
+                            if (!nextState.contains(pos)) nextState.add(pos); 
+                        }
+                    }
+                }
+                
+            }
+        }
     }
 
     public boolean Simulate(String r) {
