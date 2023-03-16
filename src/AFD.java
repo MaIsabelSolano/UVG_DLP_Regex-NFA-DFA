@@ -16,7 +16,7 @@ import java.util.Stack;
 public class AFD {
 
     private ArrayList<State> States;
-    private HashMap<Integer, Symbol> Symbols;
+    private HashMap<Integer, Symbol> alphabet;
     private State initialState;
     private ArrayList<Transition> trans;
     private ArrayList<State> finalStates;
@@ -28,13 +28,13 @@ public class AFD {
      * @param Symbols
      */
     public AFD(HashMap<Integer, Symbol> Symbols){
-        this.Symbols = Symbols;
+        this.alphabet = Symbols;
     }
 
     /**
      * Subset construction from NFA to DNA
      * 
-     * @param Symbols
+     * @param alphabet
      * @param afn
      */
     public AFD(HashMap<Integer, Symbol> sym, AFN afn) {
@@ -43,7 +43,7 @@ public class AFD {
         Symbol epsilon = new Symbol('ε');
         sym.remove(epsilon.id);
 
-        this.Symbols = sym;
+        this.alphabet = sym;
 
         // initialize the others too
         this.States = new ArrayList<>();
@@ -61,8 +61,16 @@ public class AFD {
         C_states.add(currentStates);
 
         // generate initial state
-        this.initialState = new State(0, 1);
+        State initState;
+        if (currentStates.contains(afn.getFinalState())){
+            initState = new State(0, 3);
+            this.finalStates.add(initState);
+        } else {
+            initState = new State(0, 1);
+        }
+        this.initialState = initState;
         this.States.add(initialState);
+        // TODO check if initial state can be a final state too
 
 
         boolean verifier = true; // Indicates if there are still states to mark
@@ -80,9 +88,9 @@ public class AFD {
             }
 
             // perform for each symbol in the alphabet
-            for (int currentSymbol: Symbols.keySet()) {
+            for (int currentSymbol: alphabet.keySet()) {
 
-                ArrayList<State> moveRes = move(afn, currentStates, Symbols.get(currentSymbol));
+                ArrayList<State> moveRes = move(afn, currentStates, alphabet.get(currentSymbol));
 
                 // e-clousure
                 moveRes = eClosure(afn, moveRes);
@@ -112,7 +120,7 @@ public class AFD {
 
                         Transition tempTransition = new Transition(
                             States.get(C_states.indexOf(currentStates)), 
-                            Symbols.get(currentSymbol),
+                            alphabet.get(currentSymbol),
                             States.get(C_states.indexOf(moveRes)));
 
                         this.trans.add(tempTransition);
@@ -124,14 +132,19 @@ public class AFD {
                     // gen state and gen transition
                     Transition tempTransition = new Transition(
                         States.get(C_states.indexOf(currentStates)), 
-                        Symbols.get(currentSymbol),
+                        alphabet.get(currentSymbol),
                         States.get(C_states.indexOf(moveRes))
                     );
 
                     // Check if the transitions was not added before
-                    boolean repeated = false;
-                    for (Transition t: trans) repeated = tempTransition.equals(t);
-                    if (!repeated) this.trans.add(tempTransition);
+                    // check for repeated transition
+                    int add = 0;
+                    for (Transition t: trans) {
+                        if (tempTransition.equals(t)) add += 1;
+                    }
+
+                    // Add to the transitions
+                    if (add == 0) trans.add(tempTransition);
                 }
 
 
@@ -147,6 +160,138 @@ public class AFD {
         //     System.out.println(temp);
         // }
 
+    }
+
+    public AFD(HashMap<Integer, Symbol> sym, SintacticTree tree) {
+
+        // Delete epsilon from Symbol dictionary
+        Symbol epsilon = new Symbol('ε');
+        sym.remove(epsilon.id);
+
+        this.alphabet = sym;
+        
+        // initialize the others too
+        this.States = new ArrayList<>();
+        this.trans = new ArrayList<>();
+        this.finalStates = new ArrayList<>();
+
+        ArrayList<ArrayList<Integer>> baseStates = new ArrayList<>();
+        Stack<ArrayList<Integer>> unverifiedStates = new Stack<>();
+        
+        // Start with the root's firtpos
+        ArrayList<Integer> currentStates = new ArrayList<>();
+        
+        ArrayList<Integer> initial = tree.getRoot().getFirstpos();
+        State newState;
+        // check if it's a valid end state
+        if (initial.contains(tree.getTerminalpos())) newState = new State(0, 3);
+        else newState = new State(0, 1);
+        this.initialState = newState;
+        States.add(newState);
+        
+
+        // add to stack
+        baseStates.add(initial);
+        unverifiedStates.push(initial);
+
+        ArrayList<Integer> nextState;
+
+        boolean keepGoing = true;
+        while (keepGoing) {
+
+            // verify if there is still anything to get transitions from 
+            if (!unverifiedStates.isEmpty()) {
+                // if so, pos the latest unverified State
+                currentStates = unverifiedStates.pop();
+
+            } else {
+                // The alrgorithm is over
+                keepGoing = false;
+            }
+
+            // check transtitions from each symbol in the alphabet
+            for (int i: alphabet.keySet()) {
+                nextState = new ArrayList<>(); // create empty
+
+                // check in all of the positions of the currentStates
+                for (int pos: currentStates) {
+
+                    // check if the current symbol is represented in the current position
+                    if (tree.getPosSymbol().get(pos).c_id == alphabet.get(i).c_id) {
+
+                        // get the follopos and add it to currentStes
+                        for (int addPos: tree.getFollowpos(pos)) {
+                            if (!nextState.contains(addPos)) nextState.add(addPos); 
+                        }
+                    }
+                }
+
+                if (!nextState.isEmpty()) {
+                    // check it this state exists
+                    if (baseStates.contains(nextState)) {
+                        // get indexes
+                        int originId = baseStates.indexOf(currentStates);
+                        int destinyId = baseStates.indexOf(nextState);
+
+                        Transition newTrans = new Transition(
+                            States.get(originId), 
+                            alphabet.get(i), 
+                            States.get(destinyId)
+                        );
+
+                        // check for repeated transition
+                        int add = 0;
+                        for (Transition t: trans) {
+                            if (newTrans.equals(t)) add += 1;
+                        }
+                        // Add to the transitions
+                        if (add == 0) trans.add(newTrans);
+
+                    } else {
+                        // generate new state and transitions
+
+                        // add to the array
+                        baseStates.add(nextState);
+                        unverifiedStates.push(nextState);
+                        
+                        // get indexes
+                        int originId = baseStates.indexOf(currentStates);
+                        int destinyId = baseStates.indexOf(nextState);
+
+                        // check if it's final state
+                        if (nextState.contains(tree.getTerminalpos())){ newState = new State(destinyId, 3);}
+                        else newState = new State(destinyId, 2);
+
+                        States.add(newState);
+
+                        //Add transition to transitions arrray
+                        Transition newTrans = new Transition(
+                            States.get(originId), 
+                            alphabet.get(i), 
+                            newState
+                        );
+
+                        // check for repeated transition
+                        int add = 0;
+                        for (Transition t: trans) {
+                            if (newTrans.equals(t)) add += 1;
+                        }
+                        // Add to the transitions
+                        if (add == 0) trans.add(newTrans);
+                    }
+                }
+                
+                
+            }
+        }
+
+        // System.out.println("\nGenerated states");
+        // for (int i = 0; i < baseStates.size(); i++) {
+        //     String temp = "{";
+        //     for (int s : baseStates.get(i)) temp += Integer.toString(s);
+        //     temp += "}";
+        //     System.out.println(temp);
+        // }
     }
 
     public boolean Simulate(String r) {
@@ -263,15 +408,15 @@ public class AFD {
         return trans;
     }
 
-    public HashMap<Integer, Symbol> getSymbols() {
-        return Symbols;
+    public HashMap<Integer, Symbol> getAlphabet() {
+        return alphabet;
     }
 
     @Override
     public String toString() {
         String info = "\nAFD";
         info += "\nSymbols: ";
-        for (int sym: Symbols.keySet()) info += Symbols.get(sym).c_id + ", ";
+        for (int sym: alphabet.keySet()) info += alphabet.get(sym).c_id + ", ";
 
         info += "\nStates: {";
         for (State s: States) info += s.toString() + ", ";

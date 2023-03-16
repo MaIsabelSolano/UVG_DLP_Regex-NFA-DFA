@@ -80,10 +80,43 @@ public class Controller {
             gtf.generateFile(graphTxtFileName, afd_trans);
             tc.GraphAFN(graphTxtFileName, graphJpgFileName);
 
-            // AFD_trans simulation
+            // AFD Direct construction
+            Stack<Symbol> augmentedStack = new Stack<>();
+            for (Symbol s: stack) augmentedStack.add(s); // copy stack
+            Symbol concat = new Symbol('.');
+            Symbol enSymbol = new Symbol('#');
+            augmentedStack.add(enSymbol);
+            augmentedStack.add(concat);
+            
+
+            System.out.println("\nStack: ");
+            for (Symbol s: augmentedStack) {
+                System.out.print(s.c_id);
+            }
+            System.out.println("");
+
+            SintacticTree sintacticTree = new SintacticTree(augmentedStack);
+            sintacticTree.printTree(sintacticTree.getRoot());
+            AFD afd_direct = new AFD(alphabet, sintacticTree);
+            System.out.println(afd_direct);
+
+            // AFD_direct graph
+            graphTxtFileName = "output/AFD_direct.txt";
+            graphJpgFileName = "output/AFD_direct.jpg";
+            gtf.generateFile(graphTxtFileName, afd_direct);
+            tc.GraphAFN(graphTxtFileName, graphJpgFileName);
+
+            // --- Simulation
             String simulate1 = vis.getR();
-            if (afd_trans.Simulate(simulate1)) System.out.println("Belongs!");
-            else System.out.println("Doesn't belong!");
+
+            // AFN to AFD
+            if (afd_trans.Simulate(simulate1)) System.out.println("AFD (subset): Belongs!");
+            else System.out.println("AFD (subset): Doesn't belong!");
+
+            // Direct AFD 
+            if (afd_direct.Simulate(simulate1)) System.out.println("AFD (Direct): Belongs!");
+            else System.out.println("AFD (Direct): Doesn't belong!");
+
 
         } 
 
