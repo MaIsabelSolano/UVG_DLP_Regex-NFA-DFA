@@ -38,6 +38,11 @@ public class Vista {
 
         System.out.println("Regular expression: ");
         String input = scan.nextLine();
+
+        // remove spaces
+        input = input.replace(' ', 'ε');
+
+        // change to epsilon 
         
         if (checkCorrectness(input)) {
             

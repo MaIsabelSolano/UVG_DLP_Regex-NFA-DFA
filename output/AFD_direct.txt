@@ -6,7 +6,5 @@ digraph AFN
 	2 [shape=doublecircle];
 
 	0 -> 1 [label=a];
-	0 -> 2 [label=b];
-	0 -> 2 [label=c];
 	1 -> 2 [label=b];
 }
