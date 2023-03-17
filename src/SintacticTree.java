@@ -28,9 +28,11 @@ public class SintacticTree {
                 // addet to it 
                 TreeNode newNode = new TreeNode(input.get(i));
 
+                // Check if nullable 
                 if (newNode.value.c_id == 'ε') newNode.setNullable();
 
                 nodes.push(newNode);
+                
             } else {
                 // If it is, we have to check wheather or not the have
                 // one or two children
@@ -44,6 +46,20 @@ public class SintacticTree {
                     TreeNode right = nodes.pop();
                     TreeNode left = nodes.pop();
                     TreeNode newNode = new TreeNode(input.get(i), left, right);
+
+                    // check nullability
+                    // concat
+                    if (input.get(i).c_id == '.') {
+                        if (newNode.leftChild.isNullable() &&  newNode.righChild.isNullable()) {
+                            newNode.setNullable();
+                        }
+                    } else if (input.get(i).c_id == '|') {
+                        if (newNode.leftChild.isNullable() ||  newNode.righChild.isNullable()) {
+                            newNode.setNullable();
+                        }
+                    }
+
+                    // or 
                     nodes.push(newNode);
                 }
             }
@@ -79,8 +95,8 @@ public class SintacticTree {
                     node.addLastPos(node.righChild.getFirstpos());
                 } else node.addLastPos(node.righChild.getLastpos());
 
-            } else if (node.value.c_id == '*' || node.value.c_id == '?') {
-                // kleene or question mark (only one child)
+            } else if (node.value.c_id == '*' || node.value.c_id == '?' || node.value.c_id == '+') {
+                // kleene, plus  or question mark (only one child)
                 node.addFirstPos(node.leftChild.getFirstpos());
                 node.addLastPos(node.leftChild.getLastpos());
 
@@ -111,7 +127,14 @@ public class SintacticTree {
             // Add to the dictionary
             posSymbol.put(newpos, node.value);
 
-        } else {
+        } else if (node.value.c_id == 'ε'){
+            // Don't generate a position for it
+            ArrayList<Integer> temp = new ArrayList<>();
+            followpos.put(null, temp);
+
+        }
+        
+        else {
             // Is a leaf, a Symbol, therefore, it's first and last pos are itself
             newpos++;
             node.firstpos.add(newpos);
@@ -183,9 +206,12 @@ public class SintacticTree {
         res += "}";
 
         if (!node.value.isOperator()) {
-            res +=  ", [";
-            for (int x: followpos.get(node.getPosition())) res += Integer.toString(x) + ", ";
-            res += "]";
+            if (!node.postionIsNull()) {
+                res +=  ", [";
+                for (int x: followpos.get(node.getPosition())) res += Integer.toString(x) + ", ";
+                res += "]";
+            }
+            
         }
 
         if (node.isNullable()) res += ", N";

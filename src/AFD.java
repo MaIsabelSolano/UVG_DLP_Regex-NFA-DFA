@@ -70,7 +70,6 @@ public class AFD {
         }
         this.initialState = initState;
         this.States.add(initialState);
-        // TODO check if initial state can be a final state too
 
 
         boolean verifier = true; // Indicates if there are still states to mark
@@ -285,13 +284,13 @@ public class AFD {
             }
         }
 
-        // System.out.println("\nGenerated states");
-        // for (int i = 0; i < baseStates.size(); i++) {
-        //     String temp = "{";
-        //     for (int s : baseStates.get(i)) temp += Integer.toString(s);
-        //     temp += "}";
-        //     System.out.println(temp);
-        // }
+        System.out.println("\nGenerated states");
+        for (int i = 0; i < baseStates.size(); i++) {
+            String temp = "{";
+            for (int s : baseStates.get(i)) temp += Integer.toString(s);
+            temp += "}";
+            System.out.println(temp);
+        }
     }
 
     public boolean Simulate(String r) {
