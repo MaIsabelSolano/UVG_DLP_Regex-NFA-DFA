@@ -15,11 +15,11 @@ import java.util.Stack;
 
 public class AFD {
 
-    private ArrayList<State> States;
+    private ArrayList<State> States = new ArrayList<>();
     private HashMap<Integer, Symbol> alphabet;
     private State initialState;
-    private ArrayList<Transition> trans;
-    private ArrayList<State> finalStates;
+    private ArrayList<Transition> trans = new ArrayList<>();
+    private ArrayList<State> finalStates = new ArrayList<>();
     
     /**
      * 
@@ -44,11 +44,6 @@ public class AFD {
         sym.remove(epsilon.id);
 
         this.alphabet = sym;
-
-        // initialize the others too
-        this.States = new ArrayList<>();
-        this.trans = new ArrayList<>();
-        this.finalStates = new ArrayList<>();
 
         // Array list that 
         ArrayList<ArrayList<State>> C_states = new ArrayList<>();
@@ -174,11 +169,6 @@ public class AFD {
         sym.remove(epsilon.id);
 
         this.alphabet = sym;
-        
-        // initialize the others too
-        this.States = new ArrayList<>();
-        this.trans = new ArrayList<>();
-        this.finalStates = new ArrayList<>();
 
         ArrayList<ArrayList<Integer>> baseStates = new ArrayList<>();
         Stack<ArrayList<Integer>> unverifiedStates = new Stack<>();
@@ -417,7 +407,7 @@ public class AFD {
      * @param s     Symbols to use during the moving
      * @return      Next state
      */
-    private State moveState(State state, char s) {
+    public State moveState(State state, char s) {
 
         for (Transition t: trans) {
             if (t.getOriginState().id == state.id) {
@@ -428,96 +418,6 @@ public class AFD {
         }
 
         return null;
-    }
-
-    /**
-     * Performs the Minimization algorithm over itself. 
-     */
-    public void minimization() {
-
-        HashMap<Integer, ArrayList<State>> groups = new HashMap<>();
-
-        // first division (end states and others)
-        int statenum = 0;
-        // End sates
-        ArrayList<State> endS = new ArrayList<>(this.finalStates);
-        ArrayList<State> notEndS = new ArrayList<>(States);
-        notEndS.removeAll(endS); // deletes the ones that are repeated
-
-        ArrayList<Transition> transit = new ArrayList<>(this.trans);
-        
-        groups.put(statenum++, notEndS);
-        groups.put(statenum++, endS);
-
-        boolean partitioned = true;
-        while (partitioned) {
-            partitioned = false;
-
-            for (int groupID: groups.keySet()) {
-                ArrayList<State> group = new ArrayList<>(groups.get(groupID));
-
-                // Partition based on transitions
-                HashMap<Integer, ArrayList<State>> partitions = new HashMap<>();
-                for (Transition t: transit) {
-                    if (group.contains(t.originState)) {
-                        ArrayList<State> partition = partitions.get(t.getFinalState().getId());
-                        if (partition == null) {
-                            partition = new ArrayList<>();
-                            partitions.put(t.getFinalState().getId(), partition);
-                        }
-                        partition.add(t.getOriginState());
-                    }
-                } 
-
-                if (partitions.size() > 1) {
-                    // to be sure that partitions is not empty
-                    groups.remove(groupID);
-                    for (ArrayList<State> partition : partitions.values()) {
-                        groups.put(statenum++, partition);
-                    }
-                    partitioned = true;
-                    break;
-                }
-            }
-        }
-
-        // create new transitions and states based on the partitioned groups
-        HashMap<Integer, State> stateMap = new HashMap<>();
-        for (int groupID: groups.keySet()) {
-            ArrayList<State> group = groups.get(groupID);
-            boolean isFinal = false;
-            for (State st: group) {
-                if (this.finalStates.contains(st)) {
-                    isFinal = true;
-                    break;
-                }
-            }
-
-            State newState;
-            if (isFinal) newState  = new State(groupID, 3);
-            else newState = new State(groupID, 2);
-
-            for (Symbol symbol: alphabet.values()) {
-                HashMap<Integer, ArrayList<State>> partitions = new HashMap<>();
-                for (Transition t: transit) {
-                    if (group.contains(t.getOriginState()) && t.symbol.c_id == symbol.c_id) {
-                        ArrayList<State> partition = partitions.get(t.getFinalState().getId());
-                        if (partition == null ) {
-                            partition = new ArrayList<>();
-                            partitions.put(t.getFinalState().id, partition);
-                        }
-                        partition.add(t.getOriginState());
-                    }
-                }
-                if (partitions.size() == 1) {
-                    State toState = stateMap.get(partitions.keySet().iterator().next());
-                    Transition newTransition = new Transition(newState, symbol, toState);
-                    transit.add(newTransition);
-                }
-            }
-            
-        }
-
     }
 
     /* Getters */
@@ -539,6 +439,39 @@ public class AFD {
 
     public HashMap<Integer, Symbol> getAlphabet() {
         return alphabet;
+    }
+
+    /* Setters */
+    public void setAlphabet(HashMap<Integer, Symbol> alphabet) {
+        this.alphabet = alphabet;
+    }
+
+    public void setInitialState(State initialState) {
+        this.initialState = initialState;
+    }
+
+    public void setFinalStates(ArrayList<State> finalStates) {
+        this.finalStates = finalStates;
+    }
+
+    public void setTransitions(ArrayList<Transition> trans) {
+        this.trans = trans;
+    }
+
+    public void addState(State newState, boolean isFinal) {
+        // Check for null states, if null, don't add
+        if (newState != null) {
+            if (!this.States.contains(newState)) States.add(newState);
+            if (isFinal) this.finalStates.add(newState);
+        }
+    }
+
+    public void addTransition(State origin, Symbol s, State whereTo) {
+        // Check for null informations, if null, don't add that transition
+        if (origin != null && s != null && whereTo != null) {
+            Transition temp = new Transition(origin, s, whereTo);
+            if (!trans.contains(temp)) trans.add(temp);
+        }
     }
 
     @Override
