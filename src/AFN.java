@@ -161,31 +161,24 @@ public class AFN extends Automata{
 
     @Override
     public String toString() {
-        String ret = "\nAFN\nSymbols: ";
+        String ret = "\nSymbols: " + Symbols.values().toString();
 
-        for (Integer i: Symbols.keySet()) {
-            ret += Symbols.get(i).c_id + ", ";
-        }
+        ret += "\nStates: " + States.toString();
 
-        ret += "\nStates: {";
-        for (State s: States) {
-            ret += Integer.toString(s.id) + ", ";
-        }
-
-        ret += "}\nInitial State : " + this.initialState.toString();
+        ret += "\nInitial State : " + this.initialState.toString();
 
         ret += "\nFinal State : " + this.FinalState.toString();
 
-        ret += "\nTransitions: ";
-        for (int i = 0; i < transitions.size(); i ++)  {
-            String temp = "[";
-            int originId = transitions.get(i).getOriginState().getId();
-            int endID = transitions.get(i).getFinalState().getId();
-            char symbol = transitions.get(i).symbol.c_id;
-            temp += Integer.toString(originId) + " --" + symbol + "-> "+ Integer.toString(endID);
-            temp += "]";
-            ret += temp;
-        }
+        ret += "\nTransitions: " + transitions.toString();
+        // for (int i = 0; i < transitions.size(); i ++)  {
+        //     String temp = "[";
+        //     int originId = transitions.get(i).getOriginState().getId();
+        //     int endID = transitions.get(i).getFinalState().getId();
+        //     char symbol = transitions.get(i).symbol.c_id;
+        //     temp += Integer.toString(originId) + " --" + symbol + "-> "+ Integer.toString(endID);
+        //     temp += "]";
+        //     ret += temp;
+        // }
 
         return ret;
     }

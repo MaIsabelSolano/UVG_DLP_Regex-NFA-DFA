@@ -47,8 +47,12 @@ public class GraphToFile {
                 else if (s.getType() == Type.Inicial) writer.write("\n\t"+s.toString()+" [shape=circle, color=gray28];");
                 else writer.write("\n\t"+s.toString()+" [shape=circle];");
             }
+            writer.write("\n\tinitial [label = \"\", shape=none, height = .0, width = .0]");
 
             writer.write("\n");
+            
+            // Initial state 
+            writer.write("\n\tinitial -> " + afn.getInitialState());
 
             // -Transitions
             for (Transition t: afn.getTransitions()) {
@@ -96,6 +100,12 @@ public class GraphToFile {
                 else if (s.getType() == Type.Inicial) writer.write("\n\t"+s.toString()+" [shape=circle, color=gray28];");
                 else writer.write("\n\t"+s.toString()+" [shape=circle];");
             }
+            writer.write("\n\tinitial [label = \"\", shape=none, height = .0, width = .0]");
+
+            writer.write("\n");
+            
+            // Initial state 
+            writer.write("\n\tinitial -> " + afd.getInitialState());
 
             writer.write("\n");
 

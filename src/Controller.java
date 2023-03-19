@@ -40,12 +40,7 @@ public class Controller {
 
             HashMap<Integer, Symbol> alphabet = itp.getDic();
 
-            System.out.println("\nDictionary:");
-            for (int i: alphabet.keySet()) {
-                System.out.print(alphabet.get(i).c_id);
-            }
-
-            System.out.println("\nStack: ");
+            System.out.println("\nPostfix: ");
             for (Symbol s: stack) {
                 System.out.print(s.c_id);
             }
@@ -59,7 +54,7 @@ public class Controller {
             // AFN
             Thompson thompson = new Thompson(alphabet);
             AFN afn = thompson.SubsetConstuction(regexT.getRoot());
-
+            System.out.println(" \n*** NFA ***");
             System.out.println(afn);
 
             // AFN graph
@@ -72,6 +67,7 @@ public class Controller {
 
             // AFN to AFD
             AFD afd_trans = new AFD(alphabet, afn);
+            System.out.println("\n*** NFA to DFA ***");
             System.out.println(afd_trans);
 
             // AFD_trans graph
@@ -88,13 +84,14 @@ public class Controller {
             augmentedStack.add(enSymbol);
             augmentedStack.add(concat);
             
-
-            System.out.println("\nStack: ");
+            System.out.println("\n*** DFA Direct construction ***");
+            System.out.println("\nAugmented postfix: ");
             for (Symbol s: augmentedStack) {
                 System.out.print(s.c_id);
             }
             System.out.println("");
 
+            System.out.println("\nSyntactic Tree");
             SintacticTree sintacticTree = new SintacticTree(augmentedStack);
             sintacticTree.printTree(sintacticTree.getRoot());
             AFD afd_direct = new AFD(alphabet, sintacticTree);
@@ -109,6 +106,7 @@ public class Controller {
             // AFD minimization
             AFD_minimizer afdMin = new AFD_minimizer();
             AFD afd_minimized = afdMin.minimize(afd_trans);
+            System.out.println("\n*** Minimized DFA (NFA to DFA) ***");
             System.out.println(afd_minimized);
 
             // AFD_trans minimized graph

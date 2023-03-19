@@ -476,22 +476,16 @@ public class AFD {
 
     @Override
     public String toString() {
-        String info = "\nAFD";
-        info += "\nSymbols: ";
-        for (int sym: alphabet.keySet()) info += alphabet.get(sym).c_id + ", ";
+        String info = "";
+        info += "\nSymbols: " + alphabet.values().toString();
 
-        info += "\nStates: {";
-        for (State s: States) info += s.toString() + ", ";
-        info += "}";
+        info += "\nStates: " + States.toString();
 
-        info += "\nTransitions: ";
-        for (Transition t: trans) info += t.toString();
+        info += "\nTransitions: " + trans.toString();
 
         info += "\nInitial state: " + this.initialState.toString();
 
-        info += "\nTerminal states: {"; 
-        for (State s: finalStates) info += s.toString() + ", ";
-        info += "}";
+        info += "\nAccepting states: " + finalStates.toString(); 
 
         return info;
     }
