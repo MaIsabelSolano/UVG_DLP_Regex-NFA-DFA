@@ -1,3 +1,12 @@
+/*
+ * @author: Ma. Isabel Solano
+ * @version 2, 19/03/23
+ * 
+ * Syntactic Tree for DFA direct construction.
+ * 
+ */
+
+
 package src;
 
 import java.util.HashMap;
@@ -18,6 +27,13 @@ public class SintacticTree {
         genFollowPos(root);
     }
 
+    /**
+     * Tree generator that establshes the structure of parent and children nodes
+     * using treeNodes
+     * 
+     * @param input Augmented postfix regex
+     * @return      The root of the tree
+     */
     private TreeNode genTree(Stack<Symbol> input){
 
         Stack<TreeNode> nodes = new Stack<>();
@@ -71,6 +87,14 @@ public class SintacticTree {
         return nodes.pop();
     }
 
+    /**
+     * Given a treeNode, it generates the first and last pos of its
+     * children and itself. It distiguishes the type of the current
+     * node and takes decision accordingly. 
+     * 
+     * @param node  When called externally, the root of the tree. When
+     *              called internally, a given node's children. 
+     */
     private void genFirstAndLastPos( TreeNode node) {
 
         if (node == null) {
@@ -154,6 +178,14 @@ public class SintacticTree {
         }
     }
 
+    /**
+     * With the finished tree and all of the nodes with their respective
+     * first and last pos, it generates the follopos of each position
+     * of th regular expression. 
+     * 
+     * @param node  When called externally, the root of the tree. When
+     *              called internally, a given node's children. 
+     */
     private void genFollowPos(TreeNode node) {
 
         if (node == null) {
@@ -181,10 +213,15 @@ public class SintacticTree {
             }
         }
 
-
-
     }
 
+    /**
+     * Generates a printable String of all of the tree nodes and their
+     * respective information. 
+     * 
+     * @param node When called externally, the root of the tree. When
+     *              called internally, a given node's children. 
+     */
     public void printTree( TreeNode node) {
 
         if (node == null) {

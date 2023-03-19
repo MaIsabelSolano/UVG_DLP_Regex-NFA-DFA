@@ -1,3 +1,11 @@
+/*
+ * @author: Ma. Isabel Solano
+ * @version 2, 19/03/23
+ * 
+ * Symbol class that stores the char and int value of each symbol
+ * 
+ */
+
 package src;
 public class Symbol {
     

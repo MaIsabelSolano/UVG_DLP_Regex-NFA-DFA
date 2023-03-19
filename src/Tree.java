@@ -1,6 +1,6 @@
 /*
  * @author: Ma. Isabel Solano
- * @version 1, 26/02/23
+ * @version 2, 19/03/23
  * 
  * Tree Structure for by TreNodes. 
  * 

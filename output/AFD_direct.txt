@@ -2,12 +2,7 @@ digraph AFN
 {
 	rankdir="LR";
 	0 [shape=doublecircle];
-	1 [shape=doublecircle];
-	2 [shape=doublecircle];
 
-	0 -> 1 [label=0];
-	0 -> 2 [label=1];
-	2 -> 2 [label=0];
-	1 -> 2 [label=0];
-	1 -> 2 [label=1];
+	0 -> 0 [label=a];
+	0 -> 0 [label=b];
 }

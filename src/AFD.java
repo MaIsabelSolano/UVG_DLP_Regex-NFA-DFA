@@ -1,6 +1,6 @@
 /*
  * @author: Ma. Isabel Solano
- * @version 1.1, 15/3/23
+ * @version 2, 19/03/23
  * 
  * AFN class as a Automata should be defined.
  * 
@@ -161,6 +161,12 @@ public class AFD {
 
     }
 
+    /**
+     * Direct DFA construction constructor. 
+     * 
+     * @param sym   The Languages alphabet
+     * @param tree  The Syntactic tree with the regex information
+     */
     public AFD(HashMap<Integer, Symbol> sym, SintacticTree tree) {
 
         // Delete epsilon from Symbol dictionary
@@ -293,6 +299,15 @@ public class AFD {
         // }
     }
 
+    /**
+     * Given a String, using the method 'moveState' it simulates goes through
+     * all of the element of the string and to their respective transitions till
+     * finishing the string and checking if the last reached states was a 
+     * valid end state
+     * 
+     * @param r String to simulates
+     * @return  True of false according to if the string was valid or not.
+     */
     public boolean Simulate(String r) {
 
         State currentState = initialState;
@@ -307,7 +322,15 @@ public class AFD {
 
     }
 
-    ArrayList<State> eClosure(AFN afn, ArrayList<State> current) {
+    /**
+     * Calculates all of the available states that can e reached using
+     * epsilon
+     * 
+     * @param afn       NFA that wants to be converted to DFA
+     * @param current   Current set of states
+     * @return          Next set of states 
+     */
+    private ArrayList<State> eClosure(AFN afn, ArrayList<State> current) {
 
         ArrayList<State> E_states = new ArrayList<>();
         for (State s: current) E_states.add(s); // copy first symbols
@@ -350,7 +373,16 @@ public class AFD {
         return E_states;
     }
 
-    ArrayList<State> move(AFN afn, ArrayList<State> current, Symbol s) {
+    /**
+     * Given an AFN, a current list of states, and a given Symbol, it
+     * calculates all of the next staes. 
+     * 
+     * @param afn       AFN that is in process on being changed to DFA
+     * @param current   Current set of states
+     * @param s         Symbol to use for moving.
+     * @return          A set of states with the possible next states. 
+     */
+    private ArrayList<State> move(AFN afn, ArrayList<State> current, Symbol s) {
 
         ArrayList<State> S_states = new ArrayList<>();
 
@@ -377,6 +409,14 @@ public class AFD {
         return S_states;
     }
 
+    /**
+     * Used during simulation, given a state and a symbol (char)
+     * returns the State that follows according to the given String
+     * 
+     * @param state Current state
+     * @param s     Symbols to use during the moving
+     * @return      Next state
+     */
     private State moveState(State state, char s) {
 
         for (Transition t: trans) {
@@ -390,6 +430,9 @@ public class AFD {
         return null;
     }
 
+    /**
+     * Performs the Minimization algorithm over itself. 
+     */
     public void minimization() {
 
         HashMap<Integer, ArrayList<State>> groups = new HashMap<>();
