@@ -107,8 +107,15 @@ public class Controller {
             tc.GraphAFN(graphTxtFileName, graphJpgFileName);
 
             // AFD minimization
-            // afd_trans.minimization();
-            // System.out.println(afd_trans);
+            AFD_minimizer afdMin = new AFD_minimizer();
+            AFD afd_minimized = afdMin.minimize(afd_trans);
+            System.out.println(afd_minimized);
+
+            // AFD_trans minimized graph
+            graphTxtFileName = "output/AFD_min.txt";
+            graphJpgFileName = "output/AFD_min.jpg";
+            gtf.generateFile(graphTxtFileName, afd_minimized);
+            tc.GraphAFN(graphTxtFileName, graphJpgFileName);
 
             // --- Simulation
             String simulate1 = vis.getR();
@@ -124,6 +131,10 @@ public class Controller {
             // Direct AFD 
             if (afd_direct.Simulate(simulate1)) System.out.println("AFD (Direct): Belongs!");
             else System.out.println("AFD (Direct): Doesn't belong!");
+
+            // Minimidez AFD 
+            if (afd_direct.Simulate(simulate1)) System.out.println("AFD (Min): Belongs!");
+            else System.out.println("AFD (Min): Doesn't belong!");
 
 
         } 
