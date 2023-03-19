@@ -39,7 +39,10 @@ public class SintacticTree {
                 if (input.get(i).c_id == '+' || input.get(i).c_id == '*' || input.get(i).c_id == '?') {
                     TreeNode left = nodes.pop();
                     TreeNode newNode = new TreeNode(input.get(i), left);
+
+                    // Check if nullable 
                     if (input.get(i).c_id == '*' || input.get(i).c_id == '?') newNode.setNullable();
+                    if (newNode.leftChild.isNullable()) newNode.setNullable();
                     nodes.push(newNode);
                 }
                 else {
