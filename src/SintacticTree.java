@@ -88,14 +88,14 @@ public class SintacticTree {
 
                 // firstpos
                 if (node.leftChild.isNullable()) {
-                    node.addFirstPos(node.leftChild.getLastpos());
+                    node.addFirstPos(node.leftChild.getFirstpos());
                     node.addFirstPos(node.righChild.getFirstpos());
                 } else node.addFirstPos(node.leftChild.getFirstpos());
 
                 // lastpos
                 if (node.righChild.isNullable()) {
                     node.addLastPos(node.leftChild.getLastpos());
-                    node.addLastPos(node.righChild.getFirstpos());
+                    node.addLastPos(node.righChild.getLastpos());
                 } else node.addLastPos(node.righChild.getLastpos());
 
             } else if (node.value.c_id == '*' || node.value.c_id == '?' || node.value.c_id == '+') {

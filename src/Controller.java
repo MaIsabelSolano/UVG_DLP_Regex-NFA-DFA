@@ -107,8 +107,8 @@ public class Controller {
             tc.GraphAFN(graphTxtFileName, graphJpgFileName);
 
             // AFD minimization
-            afd_trans.minimization();
-            System.out.println(afd_trans);
+            // afd_trans.minimization();
+            // System.out.println(afd_trans);
 
             // --- Simulation
             String simulate1 = vis.getR();
