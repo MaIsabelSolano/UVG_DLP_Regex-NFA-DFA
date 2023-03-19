@@ -31,4 +31,9 @@ public class Symbol {
 
         return operator;
     }
+
+    @Override
+    public String toString() {
+        return "" + c_id;
+    }
 }

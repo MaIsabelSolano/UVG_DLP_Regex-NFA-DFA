@@ -390,6 +390,93 @@ public class AFD {
         return null;
     }
 
+    public void minimization() {
+
+        HashMap<Integer, ArrayList<State>> groups = new HashMap<>();
+
+        // first division (end states and others)
+        int statenum = 0;
+        // End sates
+        ArrayList<State> endS = new ArrayList<>(this.finalStates);
+        ArrayList<State> notEndS = new ArrayList<>(States);
+        notEndS.removeAll(endS); // deletes the ones that are repeated
+
+        ArrayList<Transition> transit = new ArrayList<>(this.trans);
+        
+        groups.put(statenum++, notEndS);
+        groups.put(statenum++, endS);
+
+        boolean partitioned = true;
+        while (partitioned) {
+            partitioned = false;
+
+            for (int groupID: groups.keySet()) {
+                ArrayList<State> group = new ArrayList<>(groups.get(groupID));
+
+                // Partition based on transitions
+                HashMap<Integer, ArrayList<State>> partitions = new HashMap<>();
+                for (Transition t: transit) {
+                    if (group.contains(t.originState)) {
+                        ArrayList<State> partition = partitions.get(t.getFinalState().getId());
+                        if (partition == null) {
+                            partition = new ArrayList<>();
+                            partitions.put(t.getFinalState().getId(), partition);
+                        }
+                        partition.add(t.getOriginState());
+                    }
+                } 
+
+                if (partitions.size() > 1) {
+                    // to be sure that partitions is not empty
+                    groups.remove(groupID);
+                    for (ArrayList<State> partition : partitions.values()) {
+                        groups.put(statenum++, partition);
+                    }
+                    partitioned = true;
+                    break;
+                }
+            }
+        }
+
+        // create new transitions and states based on the partitioned groups
+        HashMap<Integer, State> stateMap = new HashMap<>();
+        for (int groupID: groups.keySet()) {
+            ArrayList<State> group = groups.get(groupID);
+            boolean isFinal = false;
+            for (State st: group) {
+                if (this.finalStates.contains(st)) {
+                    isFinal = true;
+                    break;
+                }
+            }
+
+            State newState;
+            if (isFinal) newState  = new State(groupID, 3);
+            else newState = new State(groupID, 2);
+
+            for (Symbol symbol: alphabet.values()) {
+                HashMap<Integer, ArrayList<State>> partitions = new HashMap<>();
+                for (Transition t: transit) {
+                    if (group.contains(t.getOriginState()) && t.symbol.c_id == symbol.c_id) {
+                        ArrayList<State> partition = partitions.get(t.getFinalState().getId());
+                        if (partition == null ) {
+                            partition = new ArrayList<>();
+                            partitions.put(t.getFinalState().id, partition);
+                        }
+                        partition.add(t.getOriginState());
+                    }
+                }
+                if (partitions.size() == 1) {
+                    State toState = stateMap.get(partitions.keySet().iterator().next());
+                    Transition newTransition = new Transition(newState, symbol, toState);
+                    transit.add(newTransition);
+                }
+            }
+            
+        }
+
+    }
+
     /* Getters */
     public ArrayList<State> getFinalStates() {
         return finalStates;

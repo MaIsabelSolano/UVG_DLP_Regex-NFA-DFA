@@ -106,6 +106,10 @@ public class Controller {
             gtf.generateFile(graphTxtFileName, afd_direct);
             tc.GraphAFN(graphTxtFileName, graphJpgFileName);
 
+            // AFD minimization
+            afd_trans.minimization();
+            System.out.println(afd_trans);
+
             // --- Simulation
             String simulate1 = vis.getR();
 

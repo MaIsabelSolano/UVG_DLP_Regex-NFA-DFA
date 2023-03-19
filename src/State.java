@@ -69,6 +69,11 @@ public class State implements Comparable<State> {
     public Type getType() {
         return type;
     }
+
+    public boolean isFinal() {
+        if (type == Type.Final) return true;
+        else return false; 
+    }
     
 }
 
