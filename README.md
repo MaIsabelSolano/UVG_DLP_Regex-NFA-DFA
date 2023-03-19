@@ -7,12 +7,12 @@ CC3071 - Diseño de Lenguajes de Programación <br>
 Ma. Isabel Solano 20504 <br>
 
 ## Índice
-* [Sobre el Laboratorio](https://github.com/MaIsabelSolano/UVG_DLP_Regex-NFA/edit/main/README.md#sobre-el-laboratorio)
-* [Objetivos](https://github.com/MaIsabelSolano/UVG_DLP_Regex-NFA-DFA/edit/main/README.md#objetivos)
-* [Dependencias](https://github.com/MaIsabelSolano/UVG_DLP_Regex-NFA-DFA/edit/main/README.md#dependencias)
-* [Funciones](https://github.com/MaIsabelSolano/UVG_DLP_Regex-NFA-DFA/edit/main/README.md#funciones)
-* [Modo de uso](https://github.com/MaIsabelSolano/UVG_DLP_Regex-NFA-DFA/edit/main/README.md#modo-de-uso)
-* [Tecnologías](https://github.com/MaIsabelSolano/UVG_DLP_Regex-NFA-DFA/blob/main/README.md#tecnologías)
+* [Sobre el Laboratorio](https://github.com/MaIsabelSolano/UVG_DLP_Regex-NFA-DFA#sobre-el-laboratorio)
+* [Objetivos](https://github.com/MaIsabelSolano/UVG_DLP_Regex-NFA-DFA#dependencias)
+* [Dependencias](https://github.com/MaIsabelSolano/UVG_DLP_Regex-NFA-DFA#dependencias)
+* [Funciones](https://github.com/MaIsabelSolano/UVG_DLP_Regex-NFA-DFA#funciones)
+* [Modo de uso](https://github.com/MaIsabelSolano/UVG_DLP_Regex-NFA-DFA#modo-de-uso)
+* [Tecnologías](https://github.com/MaIsabelSolano/UVG_DLP_Regex-NFA-DFA#tecnologías)
 
 ## Sobre el Laboratorio
 Se buscba desarrollar una implementación de algoritmos para la construcción de autómatas finitos no deterministas a partir de una expresión regular dada. Para ello se utilizan distintos métodos de construcción, entre estos Thompson, subconjuntos, construcción directa, etc. 
